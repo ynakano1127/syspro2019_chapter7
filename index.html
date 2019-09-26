@@ -15,22 +15,35 @@
         <div>
             <ul id="messages"></ul>
             <input id="name" placeholder="名前">
-            <!-- TODO1 ここにメッセージ入力フォームを追加 -->
-            <!-- TODO1 ここに送信ボタンを追加 -->
-            
+            <input id="message" placeholder="メッセージ">
+            <button id="send">投稿</button>
         </div>
         <script>
-            // TODO0 ここに設定情報を貼り付ける  
-            
-            
-            
+            // Your web app's Firebase configuration
+            var firebaseConfig = {
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+
             // データベースの参照を準備
             var messagesRef = firebase.firestore().collection('messages')
         
-            // TODO4 メッセージを表示
-            
-            // TODO2 送信ボタンが押された時の処理
-            
+            messagesRef.onSnapshot(function(snapshot) {
+                snapshot.docChanges.forEach(function(change) {
+                    if (change.type === 'added') {
+                        $('<div id="box" class="line__left">').appendTo('#messages');
+                        $('<div>').text(change.doc.data().name).appendTo('#box');
+                        $('<div class="text">').text(change.doc.data().body).appendTo('#box');
+                    }
+                });
+            });
+            $('#send').click(function() {
+		    $('<p>追加しました</p>').appendTo('#messages');
+		    messagesRef.add({
+			    name: $('#name').val(),
+			    body: $('#messages').val(),
+		    });
+	    });
         </script>
     </body>
 </html>
